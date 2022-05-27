@@ -95,14 +95,17 @@ class IndexingApi:
 
     def send_to_index(self):
         path = self.file_path.get()
-        list_url = self.input_list_url.get("1.0", "end")
+
+        # if last element is empty string or input is empty
+        list_url = list(filter(None, self.input_list_url.get("1.0", "end").split('\n')))
+
         self.disabled_label()
 
         # checking if the cells are completed correctly
-        if path and 0 < len(list_url.split('\n')) <= 200:
+        if all([path, 0 < len(list_url) <= 200]):
 
             # turns the list into a dictionary to send
-            url_dict = dict.fromkeys(list(list_url.splitlines()), self.command)
+            url_dict = dict.fromkeys(list_url, self.command)
             path = path.replace("\\", "\\\\")
 
             # send indexing requests
@@ -111,47 +114,54 @@ class IndexingApi:
             # print response
             self.print_response()
 
-        elif len(list_url.split('\n')) > 200:
+        elif len(list_url) > 200:
             self.enable_label()
             self.hide_max_url_info_and_above_filds()
             self.response_area_hide()
             self.show_max_url_info()
-        elif not path and list_url:
+
+        elif any([path, list_url]):
             self.enable_label()
             self.hide_max_url_info_and_above_filds()
             self.response_area_hide()
             self.show_above_filds()
 
     def interfejs_indexing_api(self):
-            # frontend
 
             self.canvas1 = tk.Canvas(self.root, width=800, height=500)
             self.canvas1.pack()
 
-            path_text = tk.Label(self.root, text="Insert the full path to the verification file")
-            self.canvas1.create_window(400, 20, window=path_text)
-
-            input_url_text = tk.Label(self.root, text="Insert links (1 link per line) (maximum 200 links per day per project)")
-            self.canvas1.create_window(400, 110, window=input_url_text)
-
+            # guide area
             text_guide = tk.Label(self.root, text="Link to the guide to obtaining the authorization file in Polish")
             self.canvas1.create_window(400, 495, window=text_guide)
 
-            link = tk.Label(self.root, text="https://docs.google.com/document/d/1gRk3wv_7rN5ZUe4bW6q8_mODWiYhjeicQekEcZTJmlo/edit#",
+            link = tk.Label(self.root,
+                            text="https://docs.google.com/document/d/1gRk3wv_7rN5ZUe4bW6q8_mODWiYhjeicQekEcZTJmlo/edit#",
                             fg="blue", cursor="hand2")
             link.pack()
             link.bind("<Button-1>", lambda event: webbrowser.open(link.cget("text")))
 
+            # file path area
+            path_text = tk.Label(self.root, text="Insert the full path to the verification file")
+            self.canvas1.create_window(400, 20, window=path_text)
             self.file_path = tk.Entry(self.root)
             self.canvas1.create_window(400, 50, window=self.file_path, width=750)
+
+            # url list area
+            input_url_text = tk.Label(self.root,
+                                      text="Insert links (1 link per line) (maximum 200 links per day per project)")
+            self.canvas1.create_window(400, 110, window=input_url_text)
 
             self.input_list_url = tk.Text(self.root)
             self.canvas1.create_window(400, 200, window=self.input_list_url, height=150, width=750)
             text_scroll_y = tk.Scrollbar(self.root, orient='vertical', command=self.input_list_url.yview)
             self.canvas1.create_window(785, 200, window=text_scroll_y, height=150)
 
-            self.button_index = tk.Button(text='URL Index', command=lambda: self.change_sending_command('URL_UPDATED'))
-            self.button_de_index = tk.Button(text='URL deleted', command=lambda: self.change_sending_command('URL_DELETED'))
+            # index, delete button
+            self.button_index = tk.Button(text='URL Index',
+                                          command=lambda: self.change_sending_command('URL_UPDATED'))
+            self.button_de_index = tk.Button(text='URL deleted',
+                                             command=lambda: self.change_sending_command('URL_DELETED'))
             self.button = tk.Button(text='Index', command=lambda: self.send_to_index()
                                                                   if self.command != 'URL_DELETED'
                                                                   else self.valid_del_url())
@@ -177,8 +187,8 @@ class IndexingApi:
                                                                 height=100, state='hidden')
 
             self.canvas_response_label_feedback = self.canvas1.create_window(400, 355,
-                                                                            window=self.label_feedback,
-                                                                            height=100, width=750, state='hidden')
+                                                                             window=self.label_feedback,
+                                                                             height=100, width=750, state='hidden')
             # end response area
 
             self.canvas1.create_window(400, 290, window=self.button)
@@ -187,11 +197,11 @@ class IndexingApi:
             self.canvas1.pack()
             self.root.mainloop()
 
-    def insert_feedback(self, *args):
-        if args is not None:
-            feedback = str(args[2]) + '\n'
+    def insert_feedback(self, request_id, response, exception):
+        if exception is not None:
+            feedback = str(exception) + '\n'
         else:
-            feedback = str(args) + '\n'
+            feedback = str(response) + '\n'
         self.feedback += feedback
 
     def indexing_api(self, url_dict, path):
