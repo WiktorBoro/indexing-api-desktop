@@ -51,6 +51,12 @@ class IndexingApi:
         self.canvas1.itemconfig(tagOrId=self.max_url_text, state='hidden')
         self.canvas1.itemconfig(tagOrId=self.above_fields_text, state='hidden')
 
+    def show_max_url_info(self):
+        self.canvas1.itemconfig(tagOrId=self.max_url_text, state='normal')
+
+    def show_above_filds(self):
+        self.canvas1.itemconfig(tagOrId=self.above_fields_text, state='normal')
+
     def print_response(self):
         # print response
         self.response_area_show()
@@ -107,12 +113,14 @@ class IndexingApi:
 
         elif len(list_url.split('\n')) > 200:
             self.enable_label()
-            max_links_text = tk.Label(self.root, text="Maximum 200 links per day per project")
-            self.max_url_text = self.canvas1.create_window(400, 350, window=max_links_text)
+            self.hide_max_url_info_and_above_filds()
+            self.response_area_hide()
+            self.show_max_url_info()
         elif not path and list_url:
             self.enable_label()
-            complete_fields_text = tk.Label(self.root, text="Complete the above fields")
-            self.above_fields_text = self.canvas1.create_window(400, 350, window=complete_fields_text)
+            self.hide_max_url_info_and_above_filds()
+            self.response_area_hide()
+            self.show_above_filds()
 
     def interfejs_indexing_api(self):
             # frontend
@@ -147,6 +155,14 @@ class IndexingApi:
             self.button = tk.Button(text='Index', command=lambda: self.send_to_index()
                                                                   if self.command != 'URL_DELETED'
                                                                   else self.valid_del_url())
+
+            # Maximum url text area
+            max_links_text = tk.Label(self.root, text="Maximum 200 links per day per project")
+            self.max_url_text = self.canvas1.create_window(400, 350, window=max_links_text, state='hidden')
+
+            # Above fields text area
+            complete_fields_text = tk.Label(self.root, text="Complete the above fields")
+            self.above_fields_text = self.canvas1.create_window(400, 350, window=complete_fields_text, state='hidden')
 
             # response area
             self.label_feedback = tk.Text(self.root)
