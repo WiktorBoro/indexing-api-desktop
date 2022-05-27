@@ -23,8 +23,6 @@ class IndexingApi:
             self.button_de_index.config(state='disabled')
             self.button_index.config(state='normal')
 
-
-
     def disabled_label(self):
         self.button_index.config(state='disabled')
         self.button_de_index.config(state='disabled')
@@ -51,7 +49,6 @@ class IndexingApi:
 
     def print_response(self):
         # print response
-        # response area
         self.response_area_show()
 
         self.label_feedback.insert("end", self.feedback)
@@ -91,6 +88,7 @@ class IndexingApi:
 
         # checking if the cells are completed correctly
         if path and 0 < len(list_url.split('\n')) <= 200:
+
             # turns the list into a dictionary to send
             url_dict = dict.fromkeys(list(list_url.splitlines()), self.command)
             path = path.replace("\\", "\\\\")
@@ -119,8 +117,8 @@ class IndexingApi:
             path_text = tk.Label(self.root, text="Insert the full path to the verification file")
             self.canvas1.create_window(400, 20, window=path_text)
 
-            self.input_url_text = tk.Label(self.root, text="Insert links (1 link per line) (maximum 200 links per day per project)")
-            self.canvas1.create_window(400, 110, window=self.input_url_text)
+            input_url_text = tk.Label(self.root, text="Insert links (1 link per line) (maximum 200 links per day per project)")
+            self.canvas1.create_window(400, 110, window=input_url_text)
 
             text_guide = tk.Label(self.root, text="Link to the guide to obtaining the authorization file in Polish")
             self.canvas1.create_window(400, 495, window=text_guide)
