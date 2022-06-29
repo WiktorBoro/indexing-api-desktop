@@ -10,7 +10,7 @@ class IndexingApi:
         self.feedback = ''
         self.command = "URL_UPDATED"
         self.root = tk.Tk()
-        self.root.title("Indexing API v 1.1")
+        self.root.title("Indexing API v 1.2")
         self.interfejs_indexing_api()
 
     def change_sending_command(self, command):
@@ -59,6 +59,9 @@ class IndexingApi:
 
     def print_response(self):
         # print response
+        self.label_feedback.config(state='normal', wrap='none')
+        self.label_feedback.delete("1.0", "end")
+
         self.response_area_show()
         self.hide_max_url_info_and_above_filds()
 
