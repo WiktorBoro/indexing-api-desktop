@@ -215,7 +215,10 @@ class IndexingApi:
             credentials = ServiceAccountCredentials.from_json_keyfile_name(json_key_file, scopes=scopes)
             credentials.authorize(httplib2.Http())
         except FileNotFoundError:
-            self.feedback = "Invalid file or file path"
+            self.feedback = "Invalid file path"
+            return self.print_response()
+        except ValueError:
+            self.feedback = "Invalid file"
             return self.print_response()
 
         # Build service
