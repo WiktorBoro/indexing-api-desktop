@@ -23,3 +23,4 @@ Status code 429. Status: RESOURCE_EXHAUSTED. Rate limiting because your quota is
 Status code 403. Status: PERMISSION_DENIED. Multiple causes: unsufficient access level, indexing API not enabled in ceveloper console
 Status code 400. Status: INVALID_ARGUMENT. Body of the request has an issue. Check if it follows the right format.
 ```
+👉https://github.com/WiktorBoro/health-check-slack
